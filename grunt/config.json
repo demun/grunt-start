@@ -1,0 +1,6 @@
+{
+  "css": {
+    "src": "src/less/style.less",
+    "dest": "dest/css/style.css"
+  }
+}

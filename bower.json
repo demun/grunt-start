@@ -1,0 +1,22 @@
+{
+  "name": "demun-template",
+  "version": "0.1.0",
+  "authors": [
+    "demun <hjm01@naver.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "1.11.3",
+  },
+  "devDependencies": {
+    "bootstrap": "~3.3.5",
+    "colorbox": "~1.6.1"
+  }
+}
