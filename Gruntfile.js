@@ -26,7 +26,7 @@ module.exports = function (grunt) {
             dist: {
                 files: [{
                 dot: true,
-                // nonull: true,
+                nonull: true,
                 src: [
                     'dest'
                     ]
@@ -73,6 +73,79 @@ module.exports = function (grunt) {
                 dest: config.css.dest
             }
         },
+        // sass 를 css 로 변환합니다.
+        // grunt-sass 는 루비를 설치하지 않아도 사용할수 있습니다.
+        // https://www.npmjs.com/package/grunt-sass
+        // https://github.com/sass/node-sass
+        sass: {
+            // options: {
+            //     // sourceMap: false,
+            //     // outFile: false,
+            //     // outputStyle: 'expanded' // nested, expanded, compact, compressed
+            // },
+            dist: {
+                expand: true,
+                cwd: 'src/sass/',
+                // src: ['*.scss','*.sass'],
+                src: ['*.scss'],
+                dest: 'dest/css/',
+                ext: '.css'
+            }
+        },
+        postcss: {
+            sassPost: {
+                options: {
+                    processors: [
+                        require('autoprefixer')({
+                            browsers: [
+                                'Android 2.3',
+                                'Android >= 4',
+                                'Chrome >= 35',
+                                'Firefox >= 31',
+                                'Explorer >= 9',
+                                'iOS >= 7',
+                                'Opera >= 12',
+                                'Safari >= 7.1'
+                            ]
+                        })
+                    ]
+                },
+                dist: {
+                    expand: true,
+                    cwd: 'dest/css',
+                    src: ['*.css'],
+                    dest: 'dest/css',
+                    ext: '.css'
+                }
+            },
+            prePost: {
+                options: {
+                    parser: require('postcss-scss'),
+                    processors: [
+                        require('precss')({ /* options */ }),
+                        require('autoprefixer')({
+                            browsers: [
+                                'Android 2.3',
+                                'Android >= 4',
+                                'Chrome >= 35',
+                                'Firefox >= 31',
+                                'Explorer >= 9',
+                                'iOS >= 7',
+                                'Opera >= 12',
+                                'Safari >= 7.1'
+                            ]
+                        })
+                    ]
+                },
+                dist: {
+                    expand: true,
+                    cwd: 'src/css',
+                    src: ['*.css'],
+                    dest: 'dest/css',
+                    ext: '.css'
+                }
+            }
+        },
         // css 구문검사를 합니다.
         csslint: {
             options: {
@@ -82,33 +155,19 @@ module.exports = function (grunt) {
                 src: config.css.dest
             }
         },
-        // 각 브라우져에 해당하는 벤더프리픽스를 붙여줍니다.
-        autoprefixer: {
-             options: {
-                browsers: [
-                    'Android 2.3',
-                    'Android >= 4',
-                    'Chrome >= 20',
-                    'Firefox >= 24', // Firefox 24 is the latest ESR
-                    'Explorer >= 8',
-                    'iOS >= 6',
-                    'Opera >= 12',
-                    'Safari >= 6'
-                ]
-            },
-            dist: {
-                src: config.css.dest
-                // dest: 'dist/css/styc.css'
-            }
-        },
         // css 의 속성을 정렬해줍니다.
         csscomb: {
             options: {
                 config: 'grunt/.csscomb.json'
             },
             dist: {
-                src: config.css.dest,
-                dest: config.css.dest
+                // src: config.css.dest
+                // dest: config.css.dest
+                expand: true,
+                cwd: 'dest/css',
+                src: ['*.css'],
+                dest: 'dest/css',
+                ext: '.css'
             }
         },
         // css 를 압축합니다.
@@ -187,10 +246,34 @@ module.exports = function (grunt) {
     );
 
     // css task
+    // (function (sassCompilerName) {
+    //   require('./grunt/sass-compile/' + sassCompilerName + '.js')(grunt);
+    // })(process.env.SASS || 'libsass');
+    // grunt.registerTask('sass-compile', ['sass']);
+
+    grunt.registerTask('sassPost', [
+            'sass',
+            'postcss:sassPost'
+        ]
+    );
+    grunt.registerTask('precssPost', [
+            'postcss:prePost'
+        ]
+    );
+    grunt.registerTask('pcss', [
+            'clean',
+            // 'precss',
+            'postcss'
+        ]
+    );
+
     grunt.registerTask('css', [
-            'less',
+            'clean',
+            // 'less',
+            'sass',
+            'postcss',
             'csslint',
-            'autoprefixer',
+            // 'autoprefixer',
             'csscomb',
             'cssmin'
         ]

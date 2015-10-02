@@ -1,0 +1,77 @@
+/* Variables */
+
+$blue: #056ef0;
+$column: 200px;
+
+.menu {
+    width: calc(4 * $column);
+}
+
+.menu_link {
+    background: $blue;
+    width: $column;
+}
+
+/* Conditionals */
+
+.notice--clear {
+    @if 3 < 5 {
+        background: green;
+    }
+    @else {
+        background: blue;
+    }
+}
+
+/* Loops */
+
+@for $i from 1 to 3 {
+    .b-#{$i} { width: #{$i}px; }
+}
+
+
+// @each $icon in (pull, push, offset) {
+//     .icon-$(icon) {
+//         background: url('icons/$(icon).png');
+//     }
+// }
+
+@each $animal in puma, sea-slug, egret, salamander {
+  .#{$animal}-icon {
+    background-image: url('/images/#{$animal}.png');
+  }
+}
+
+/* Mixins */
+
+@mixin large-text {
+  font: {
+    family: Arial;
+    size: 20px;
+    weight: bold;
+  }
+  color: #ff0000;
+}
+
+
+
+/* Extends */
+
+@define-extend bg-green {
+    background: green;
+}
+
+.notice--clear {
+    @extend bg-green;
+}
+
+
+/* Imports */
+
+@import "partials/base";
+
+
+/* autoprefixer */
+.test {
+	user-select: none;
+}
