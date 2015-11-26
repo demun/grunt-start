@@ -11,7 +11,6 @@ module.exports = function (grunt) {
     require('jit-grunt')(grunt, {
         useminPrepare: 'grunt-usemin'
     });
-    // require('jit-grunt')(grunt);
 
     // var config = {
     //     less: {
@@ -28,23 +27,23 @@ module.exports = function (grunt) {
         clean: {
             dist: {
                 files: [{
-                dot: true,
-                nonull: true,
-                src: ['dest']
+                    dot: true,
+                    nonull: true,
+                    src: ['dest']
                 }]
             },
             sass: {
                 files: [{
-                dot: true,
-                nonull: true,
-                src: ['src/css/sass']
+                    dot: true,
+                    nonull: true,
+                    src: ['src/css/sass']
                 }]
             },
             cssnext: {
                 files: [{
-                dot: true,
-                nonull: true,
-                src: ['src/css/cssnext-result']
+                    dot: true,
+                    nonull: true,
+                    src: ['src/css/cssnext-result']
                 }]
             },
         },
