@@ -1,4 +1,48 @@
-a {
-  color: red;
+.box {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  border-radius: 10px;
 }
-/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL2Nzc25leHQvY3NzbmV4dC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBSUE7RUFDRSxXQUF3QjtDQUN6QiIsImZpbGUiOiJjc3NuZXh0LmNzcyIsInNvdXJjZXNDb250ZW50IjpbIjpyb290IHtcclxuICAtLW1haW5Db2xvcjogcmVkO1xyXG59XHJcblxyXG5hIHtcclxuICBjb2xvcjogdmFyKC0tbWFpbkNvbG9yKTtcclxufSJdfQ== */
+
+body {
+  font-size: 13px;
+}
+
+body .testClass {
+  font-size: 19.5px;
+  user-select: none;
+}
+
+.textdiv {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  animation-name: example;
+  animation-duration: 4s;
+}
+
+/* The animation code */
+@keyframes example {
+  0% {
+    background-color: red;
+  }
+  25% {
+    background-color: yellow;
+  }
+  50% {
+    background-color: blue;
+  }
+  100% {
+    background-color: green;
+  }
+}
+
+/* The element to apply the animation to */
+div {
+  width: 100px;
+  height: 100px;
+  background-color: red;
+  animation-name: example;
+  animation-duration: 4s;
+}

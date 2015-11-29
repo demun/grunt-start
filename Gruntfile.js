@@ -8,21 +8,10 @@ module.exports = function (grunt) {
 
     // 자동으로 grunt 태스크를 로드합니다. grunt.loadNpmTasks 를 생략한다.
     // require('load-grunt-tasks')(grunt);
-    require('jit-grunt')(grunt, {
-        useminPrepare: 'grunt-usemin'
-    });
+    require('jit-grunt')(grunt);
 
-    // var config = {
-    //     less: {
-    //         src: 'src/less/style.less',
-    //         dest: 'dest/css/style.css'
-    //     }
-    // };
-
-    var config = grunt.file.readJSON('grunt/config.json');
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        config: config,
 
         clean: {
             dist: {
@@ -30,20 +19,6 @@ module.exports = function (grunt) {
                     dot: true,
                     nonull: true,
                     src: ['dest']
-                }]
-            },
-            sass: {
-                files: [{
-                    dot: true,
-                    nonull: true,
-                    src: ['src/css/sass']
-                }]
-            },
-            cssnext: {
-                files: [{
-                    dot: true,
-                    nonull: true,
-                    src: ['src/css/cssnext-result']
                 }]
             },
         },
@@ -74,18 +49,6 @@ module.exports = function (grunt) {
             ]
         },
         
-
-        // less 를 css 로 변환합니다.
-        less: {
-            options: {
-                banner: '<%= banner %>',
-                dumpLineNumbers : 'comments'
-            },
-            dist: {
-                src: config.css.src,
-                dest: config.css.dest
-            }
-        },
         cssnext: {
             options: {
                 sourcemap: true
@@ -97,13 +60,11 @@ module.exports = function (grunt) {
                 expand: true,
                 cwd: 'src/css/cssnext',
                 src: ['*.css'],
-                dest: 'src/css/cssnext-result',
+                dest: 'dest/css/cssnext',
                 ext: '.css'
             }
         },
         // sass 를 css 로 변환합니다.
-        // grunt-sass 는 루비를 설치하지 않아도 사용할수 있습니다.
-        // sass + postcss:sass
         sass: {
             options: {
                 // sourceMap: false,
@@ -111,47 +72,38 @@ module.exports = function (grunt) {
                 outputStyle: 'expanded' // nested, expanded, compact, compressed
             },
             dist: {
+                // src: 'src/sass/sass.{sass,scss}',
+                // dest: 'src/css/cssnext-result/cssnext.css'
                 expand: true,
                 cwd: 'src/sass/',
-                src: ['*.scss','*.sass'],
-                dest: 'src/css/sass/',
+                src: ['*.{sass,scss}'],
+                dest: 'dest/css/',
                 ext: '.css'
             }
         },
         postcss: {
-            // autoprefixer
-            sass: {
-                options: {
-                    processors: [
-                        require('autoprefixer')({
-                            browsers: ['last 2 versions']
-                        })
-                    ]
-                },
-                dist: {
-                    src: 'src/css/sass/*.css'
-                }
+            options: {
+                processors: [
+                    require('autoprefixer')({
+                        browsers: [
+                            'Android 2.3',
+                            'Android >= 4',
+                            'Chrome >= 20',
+                            'Firefox >= 24',
+                            'Explorer >= 8',
+                            'iOS >= 6',
+                            'Opera >= 12',
+                            'Safari >= 6'
+                        ]
+                    })
+                ]
             },
-            // sass 를 설치하지않고, postcss 의 모듈인 precss를 사용해서 sass 구문을 사용
-            precss: {
-                options: {
-                    parser: require('postcss-scss'),
-                    processors: [
-                        // require('autoprefixer')({
-                        //     browsers: ['last 2 versions']
-                        // }),
-                        require('precss')({ /* options */ })
-                    ]
-                },
-                dist: {
-                    // expand: true,
-                    // cwd: 'src/sass/',
-                    // src: ['*.scss','*.sass'],
-                    // dest: 'src/css/sass/',
-                    // ext: '.css'
-                    src: 'src/css/precss/precss.css',
-                    dest: 'src/css/precss-result/precss.css'
-                }
+            dist: {
+                expand: true,
+                cwd: 'dest/css',
+                src: ['*.css'],
+                dest: 'dest/css',
+                ext: '.css'
             }
         },
         // css 구문검사를 합니다.
@@ -160,7 +112,11 @@ module.exports = function (grunt) {
                 csslintrc: 'grunt/.csslintrc'
             },
             dist: {
-                src: config.css.dest
+                expand: true,
+                cwd: 'dest/css',
+                src: ['*.css'],
+                dest: 'dest/css',
+                ext: '.css'
             }
         },
         // css 의 속성을 정렬해줍니다.
@@ -169,8 +125,6 @@ module.exports = function (grunt) {
                 config: 'grunt/.csscomb.json'
             },
             dist: {
-                // src: config.css.dest
-                // dest: config.css.dest
                 expand: true,
                 cwd: 'dest/css',
                 src: ['*.css'],
@@ -181,17 +135,9 @@ module.exports = function (grunt) {
         // css 를 압축합니다.
         cssmin: {
             options: {
-                // TODO: disable `zeroUnits` optimization once clean-css 3.2 is released
-                //    and then simplify the fix for https://github.com/twbs/bootstrap/issues/14837 accordingly
                 compatibility: 'ie8',
                 keepSpecialComments: '*',
-                // sourceMap: true,
                 noAdvanced: true
-                // compatibility: 'ie8',
-                // default - '!'가 붙은 주석은 보존,
-                // 1 - '!'가 붙은 주석 중 첫번째 주석만 보존
-                // 0 - 모든 주석 제거
-                // noAdvanced: true,
             },
             dist: {
                 files: [{
@@ -281,13 +227,10 @@ module.exports = function (grunt) {
                     livereload: true
                 }
             },
-            // html: {
-            //     files: ['src/docs/**/*.html'],
-            //     tasks: ['useminPrepare','htmlhint:app','includes','usemin:dist:html'],
-            //     options: {
-            //         livereload: true,
-            //     }
-            // },
+            html: {
+                files: ['src/docs/**/*.html'],
+                tasks: ['includes','htmlhint'],
+            },
             cssnext: {
                 files: ['src/css/cssnext/cssnext.css'],
                 tasks: ['cssnext'],
@@ -295,7 +238,7 @@ module.exports = function (grunt) {
             },
             sass: {
                 files: ['src/sass/**/*.{scss,scss}'],
-                tasks: ['sass', 'postcss:sass'],
+                tasks: ['sass','postcss','csslint','csscomb','cssmin'],
                 
             },
             precss: {
@@ -303,21 +246,11 @@ module.exports = function (grunt) {
                 tasks: ['postcss:precss'],
                 
             },
-            js: {
-                files: [
-                    'src/js/**/*.js'
-                ],
+            jsnt: {
+                files: ['src/js/**/*.js'],
                 tasks: ['jshint','concat','uglify'],
                 
-            },
-            // img: {
-            //     files: ['src/images/**/*.{gif,jpeg,jpg,png}'],
-            //     tasks: ['imagemin'],
-            // },
-            // md: {
-            //     files: ['src/docs/guide/markdown/**/*.md'],
-            //     tasks: ['markdown'],
-            // },
+            }
         },
         connect: {
             server: {
@@ -327,7 +260,7 @@ module.exports = function (grunt) {
                     livereload: 35729,
                     // keepalive: true,
                     base: 'dest',
-                    open: 'http://<%= connect.server.options.hostname %>:<%= connect.server.options.port %>/test/index.html'
+                    open: 'http://<%= connect.server.options.hostname %>:<%= connect.server.options.port %>/category1/page-01.html'
                 }
             }
         },
@@ -337,6 +270,19 @@ module.exports = function (grunt) {
     // 작업을 로드합니다.
     // grunt.loadNpmTasks('grunt-contrib-jshint');
 
+    grunt.registerTask('serve', function (target) {
+      if (target === 'dist') {
+          return grunt.task.run(['connect', 'watch']);
+      }
+
+      grunt.task.run([
+        'default',
+        'connect',
+        'watch'
+      ]);
+
+    });
+
     // html task
     grunt.registerTask('html', [
             'includes',
@@ -344,25 +290,6 @@ module.exports = function (grunt) {
         ]
     );
 
-    // css task
-    // (function (sassCompilerName) {
-    //   require('./grunt/sass-compile/' + sassCompilerName + '.js')(grunt);
-    // })(process.env.SASS || 'libsass');
-    // grunt.registerTask('sass-compile', ['sass']);
-
-    // 1. sass + postcss + autoprefixer
-    grunt.registerTask('cssSass', [
-            'clean:sass',
-            'sass',
-            'postcss:sass'
-        ]
-    );
-    // 2. postcss-scss + postcss + autoprefixer
-    grunt.registerTask('cssPre', [
-            'clean:sass',
-            'postcss:precss'
-        ]
-    );
     grunt.registerTask('cssNext', [
             'clean:cssnext',
             'cssnext'
@@ -370,12 +297,10 @@ module.exports = function (grunt) {
     );
 
     grunt.registerTask('css', [
-            'clean',
-            // 'less',
+            // 'clean',
             'sass',
             'postcss',
             'csslint',
-            // 'autoprefixer',
             'csscomb',
             'cssmin'
         ]
@@ -400,7 +325,7 @@ module.exports = function (grunt) {
         'clean',
         'html',
         'css',
-        'javascript',
+        'jsnt',
     ]);
 
 

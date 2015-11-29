@@ -1,17 +1,7 @@
-/* before */
+@import "partials/base";
 
-@for $i from 1 to 3 {
-    .b-$i { width: $(i)px; }
-}
-
-/* after */
-
-.b-1 {
-    width: 1px
-}
-.b-2 {
-    width: 2px
-}
-.b-3 {
-    width: 3px
+@each $icon in (foo, bar, baz) {
+    .icon-$(icon) {
+        background: url('icons/$(icon).png');
+    }
 }
